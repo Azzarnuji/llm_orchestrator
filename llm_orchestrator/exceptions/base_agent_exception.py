@@ -1,0 +1,2 @@
+class BaseAgentException(Exception):
+    pass

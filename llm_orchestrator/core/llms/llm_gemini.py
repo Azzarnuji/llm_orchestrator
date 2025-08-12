@@ -1,6 +1,10 @@
 from google import genai
 from google.genai import types
 from llm_orchestrator.types.base_llm import BaseLLM
+from dotenv import load_dotenv
+import os
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", None)
 class LLMGemini(BaseLLM):
     def __init__(self):
         """
@@ -10,7 +14,7 @@ class LLMGemini(BaseLLM):
         and initializes an empty context dictionary for storing context information for future queries.
         """
         self.client = genai.Client(
-            api_key="AIzaSyCrGGmZd0GAZpaYwgRNua8KcUuqFjn9ups",
+            api_key=GEMINI_API_KEY,
         )
         self.context = {}
         

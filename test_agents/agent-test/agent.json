@@ -1,5 +1,5 @@
 {
-  "agent_name": "Attendance",
+  "agent_name": "AgentTest",
   "requiredAuth": true,
   "authType": "SSO",
   "tools": [

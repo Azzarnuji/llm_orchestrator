@@ -6,8 +6,8 @@ async def main():
     await llm_orchestrator.register_agents(
         [
             Agent(
-                name="Attendance",
-                urlAgentFile="http://localhost:5173/test_agents/attendance/agent.json"
+                name="AgentTest",
+                urlAgentFile="http://localhost:5173/test_agents/agent-test/agent.json"
             )
         ]
     )

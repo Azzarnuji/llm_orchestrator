@@ -14,9 +14,11 @@ class Executor:
         self.memory_manager = MemoryFactory.get(MemoryType.InMemory)
         self.llm_client = LLMFactory.get(LLMClientType.GEMINI)
         self.qdrant_helper = QdrantHelper()
+        self.stream = False
         
         
-    async def invoke_query(self, query: str, top_k = 5):
+    async def invoke_query(self, query: str, top_k = 5, stream = False):
+        self.stream = stream
         query_embedding = self.llm_client.embeddings([query])
         result = self.qdrant_helper.client.search(
             collection_name="llm_orchestrator",
@@ -60,6 +62,8 @@ class Executor:
         #     return explained_required_fields.text
 
         explained_answer = await self.explain_answer(tool_result, query)
+        if self.stream:
+            return explained_answer
         return explained_answer.text
     
     @PrivateMethod
@@ -173,5 +177,5 @@ class Executor:
         
         explain the answer basedon user language
         """
-        result = await self.llm_client.ask(prompt)
+        result = await self.llm_client.ask(prompt, stream=self.stream)
         return result

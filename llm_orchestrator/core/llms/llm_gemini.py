@@ -32,7 +32,7 @@ class LLMGemini(BaseLLM):
         """
         self.context = context
     
-    async def ask(self, prompt, config = None)->types.GenerateContentResponse:
+    async def ask(self, prompt, config = None, stream = False)->types.GenerateContentResponse:
         """
         Generate content based on the provided prompt and configuration.
 
@@ -51,6 +51,15 @@ class LLMGemini(BaseLLM):
             types.GenerateContentResponse: The response from the content generation
             request, which includes the generated content and associated metadata.
         """
+        if stream:
+            return self.client.models.generate_content_stream(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config={
+                    **(config if config else {}),
+                    "system_instruction": str(self.context)
+                }
+            )
         response = self.client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt,

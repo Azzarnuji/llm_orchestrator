@@ -23,7 +23,7 @@ class BaseLLM(ABC):
         raise LLMException("Method not implemented")
     
     @abstractmethod
-    async def ask(self, prompt, config = None):
+    async def ask(self, prompt, config = None, stream = False):
         """
         Asynchronously send a prompt to the LLM for processing and return the result.
 

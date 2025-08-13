@@ -1,0 +1,83 @@
+{
+  "agent_name": "AgentTest",
+  "requiredAuth": true,
+  "authType": "SSO",
+  "tools": [
+    {
+      "name": "create_leave_request",
+      "description": "Submit a leave request",
+      "intent_examples": ["Ajukan cuti", "Saya mau izin hari Jumat"],
+      "tags": ["leave", "izin", "cuti"],
+      "schema": {
+        "name": "create_leave_request",
+        "description": "Create a leave request for a specific date range and reason",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string",
+              "description": "The unique ID of the user"
+            },
+            "start_date": {
+              "type": "string",
+              "format": "date",
+              "description": "Start date of leave in YYYY-MM-DD"
+            },
+            "end_date": {
+              "type": "string",
+              "format": "date",
+              "description": "End date of leave in YYYY-MM-DD"
+            },
+            "leave_type": {
+              "type": "string",
+              "enum": ["sick", "annual", "unpaid"],
+              "description": "Type of leave"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Optional reason for the leave"
+            }
+          },
+          "required": ["user_id", "start_date", "end_date", "leave_type"]
+        }
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://leave.service/api/leave-requests"
+      }
+    },
+    {
+      "name": "get_current_weather",
+      "description": "Retrieve the current weather information for a given location",
+      "intent_examples": [
+        "Cuaca di Indonesia",
+        "Bagaimana cuaca hari ini",
+        "Weather in Bali"
+      ],
+      "tags": ["weather", "cuaca", "forecast"],
+      "schema": {
+        "name": "get_current_weather",
+        "description": "Get current weather data for a specific location using WeatherAPI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Location query (city name, region, or country)"
+            },
+            "key": {
+              "type": "string",
+              "description": "WeatherAPI access key",
+              "default": "d28452e41dcb408db3251442250908"
+            }
+          },
+          "required": ["q"]
+        }
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://api.weatherapi.com/v1/current.json?key=d28452e41dcb408db3251442250908"
+      }
+    }
+  ]
+}

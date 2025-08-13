@@ -38,46 +38,39 @@ Ensure you have a `.env` file with your `GEMINI_API_KEY` and Qdrant configuratio
 ## Usage
 A basic example of how to use the orchestrator is provided in `main.py`:
 ```python
-import asyncio
 from llm_orchestrator import LLMOrchestrator
 from llm_orchestrator.types.agents import Agent
-
-async def run_orchestrator():
-    """
-    Initializes the LLM Orchestrator, registers a sample agent,
-    and enters a loop to process user queries.
-    """
-    orchestrator = LLMOrchestrator()
-
-    # Register a sample agent.
-    # The 'urlAgentFile' should point to a JSON file defining your agent's tools.
-    # For this example, ensure a local server is serving 'test_agents/attendance/agent.json'
-    # or replace with a publicly accessible URL to your agent definition.
-    await orchestrator.register_agents(
+async def main():
+    llm_orchestrator = LLMOrchestrator()
+    
+    await llm_orchestrator.register_agents(
         [
             Agent(
                 name="AgentTest",
-                urlAgentFile="http://localhost:5173/test_agents/agent-test/agent.json"
+                urlAgentFile="https://raw.githubusercontent.com/Azzarnuji/llm_orchestrator/refs/heads/main/test_agents/agent-test/agent.json"
             )
         ]
     )
-
-    # Warm up the orchestrator (downloads agent files and vectorizes tools)
-    print("Warming up the LLM Orchestrator...")
-    await orchestrator.warm_up()
-    print("Orchestrator ready!")
-
-    print("\nEnter your queries (type 'exit' to quit):")
+    await llm_orchestrator.warm_up()
+    
     while True:
-        query = input("> ")
-        if query.lower() == "exit":
+        query = input("Enter your query: ")
+        if query == "exit":
             break
         
-        response = await orchestrator.invoke_query(query)
-        print(f"Response: {response}")
-
+        # STREAM EXAMPLE
+        response = await llm_orchestrator.invoke_query(query, stream=True)
+        for chunk in response:
+            print(chunk.text, end="")
+        print("\n")
+        
+        #NON STREAM EXAMPLE
+        # response = await llm_orchestrator.invoke_query(query)
+        # print(response.text)
+    
 if __name__ == "__main__":
-    asyncio.run(run_orchestrator())
+    import asyncio
+    asyncio.run(main())
 ```
 
 ---
@@ -122,44 +115,37 @@ Pastikan Anda memiliki file `.env` dengan `GEMINI_API_KEY` dan konfigurasi Qdran
 ## Penggunaan
 Contoh dasar penggunaan orkestrator disediakan di `main.py`:
 ```python
-import asyncio
 from llm_orchestrator import LLMOrchestrator
 from llm_orchestrator.types.agents import Agent
-
-async def jalankan_orkestrator():
-    """
-    Menginisialisasi LLM Orchestrator, mendaftarkan agen contoh,
-    dan masuk ke loop untuk memproses kueri pengguna.
-    """
-    orkestrator = LLMOrchestrator()
-
-    # Daftarkan agen contoh.
-    # 'urlAgentFile' harus menunjuk ke file JSON yang mendefinisikan alat agen Anda.
-    # Untuk contoh ini, pastikan server lokal melayani 'test_agents/attendance/agent.json'
-    # atau ganti dengan URL yang dapat diakses publik ke definisi agen Anda.
-    await orkestrator.register_agents(
+async def main():
+    llm_orchestrator = LLMOrchestrator()
+    
+    await llm_orchestrator.register_agents(
         [
             Agent(
-                name="Attendance",
-                urlAgentFile="http://localhost:5173/test_agents/attendance/agent.json"
+                name="AgentTest",
+                urlAgentFile="https://raw.githubusercontent.com/Azzarnuji/llm_orchestrator/refs/heads/main/test_agents/agent-test/agent.json"
             )
         ]
     )
-
-    # Pemanasan orkestrator (mengunduh file agen dan memvektorisasi alat)
-    print("Memanaskan LLM Orchestrator...")
-    await orkestrator.warm_up()
-    print("Orkestrator siap!")
-
-    print("\nEnter your queries (type 'exit' to quit):")
+    await llm_orchestrator.warm_up()
+    
     while True:
-        query = input("> ")
-        if query.lower() == "exit":
+        query = input("Enter your query: ")
+        if query == "exit":
             break
         
-        response = await orchestrator.invoke_query(query)
-        print(f"Response: {response}")
-
+        # STREAM EXAMPLE
+        response = await llm_orchestrator.invoke_query(query, stream=True)
+        for chunk in response:
+            print(chunk.text, end="")
+        print("\n")
+        
+        #NON STREAM EXAMPLE
+        # response = await llm_orchestrator.invoke_query(query)
+        # print(response.text)
+    
 if __name__ == "__main__":
-    asyncio.run(run_orchestrator())
+    import asyncio
+    asyncio.run(main())
 ```

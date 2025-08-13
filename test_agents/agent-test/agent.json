@@ -78,29 +78,6 @@
         "method": "GET",
         "url": "https://api.weatherapi.com/v1/current.json?key=d28452e41dcb408db3251442250908"
       }
-    },
-    {
-      "name": "get_skills",
-      "description": "Retrieve the master skill data",
-      "intent_examples": [
-        "Master skills",
-        "Mau ambil data skills",
-        "data skill"
-      ],
-      "tags": ["skill", "skills", "kemampuan"],
-      "schema": {
-        "name": "get_skills",
-        "description": "Get master skill data",
-        "parameters": {
-          "type": "object",
-          "properties": {},
-          "required": []
-        }
-      },
-      "http": {
-        "method": "GET",
-        "url": "https://api-user.linkedinindonesia.com/v1/skills"
-      }
     }
   ]
 }

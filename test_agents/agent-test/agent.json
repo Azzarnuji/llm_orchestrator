@@ -4,49 +4,6 @@
   "authType": "SSO",
   "tools": [
     {
-      "name": "create_leave_request",
-      "description": "Submit a leave request",
-      "intent_examples": ["Ajukan cuti", "Saya mau izin hari Jumat"],
-      "tags": ["leave", "izin", "cuti"],
-      "schema": {
-        "name": "create_leave_request",
-        "description": "Create a leave request for a specific date range and reason",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "description": "The unique ID of the user"
-            },
-            "start_date": {
-              "type": "string",
-              "format": "date",
-              "description": "Start date of leave in YYYY-MM-DD"
-            },
-            "end_date": {
-              "type": "string",
-              "format": "date",
-              "description": "End date of leave in YYYY-MM-DD"
-            },
-            "leave_type": {
-              "type": "string",
-              "enum": ["sick", "annual", "unpaid"],
-              "description": "Type of leave"
-            },
-            "reason": {
-              "type": "string",
-              "description": "Optional reason for the leave"
-            }
-          },
-          "required": ["user_id", "start_date", "end_date", "leave_type"]
-        }
-      },
-      "http": {
-        "method": "POST",
-        "url": "https://leave.service/api/leave-requests"
-      }
-    },
-    {
       "name": "get_current_weather",
       "description": "Retrieve the current weather information for a given location",
       "intent_examples": [
@@ -77,6 +34,36 @@
       "http": {
         "method": "GET",
         "url": "https://api.weatherapi.com/v1/current.json?key=d28452e41dcb408db3251442250908"
+      }
+    },
+    {
+      "name": "get_latest_antara_news",
+      "description": "Retrieve the latest news from Antara News Indonesia",
+      "additional_prompt_to_ai": "Please provide the link to the article",
+      "intent_examples": [
+        "Berita terbaru",
+        "Apa saja berita hari ini",
+        "Latest news from Antara"
+      ],
+      "tags": ["news", "berita", "antara"],
+      "schema": {
+        "name": "get_latest_antara_news",
+        "description": "Get the latest news articles from Antara News Indonesia",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "Number of latest news articles to retrieve",
+              "default": 10
+            }
+          },
+          "required": []
+        }
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://berita-indo-api-next.vercel.app/api/antara-news/terkini"
       }
     }
   ]

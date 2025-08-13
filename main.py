@@ -7,6 +7,7 @@ async def main():
         [
             Agent(
                 name="AgentTest",
+                # urlAgentFile="http://localhost:5173/test_agents/agent-test/agent.json"
                 urlAgentFile="https://raw.githubusercontent.com/Azzarnuji/llm_orchestrator/refs/heads/main/test_agents/agent-test/agent.json"
             )
         ]

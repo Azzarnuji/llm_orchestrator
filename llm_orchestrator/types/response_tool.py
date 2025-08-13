@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import Any, Dict
+import typing
 
 class ResponseTool(BaseModel):
     url: str
     method: str
-    payload: Any
+    payload: typing.Any
+    additional_prompt_to_ai: typing.Optional[str] = None

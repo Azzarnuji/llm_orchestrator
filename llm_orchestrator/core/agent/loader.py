@@ -29,6 +29,9 @@ class AgentLoader:
         self.in_memory_manager = MemoryFactory.get(MemoryType.InMemory)
         self.llm_client = LLMFactory.get(llm_client)
         self.qdrant_helper = QdrantHelper()
+        
+        # Agents yang sudah di-load dan valid
+        self.agents: list[AgentSchema] = []
     
     async def register_agents(self, agents: List[Agent]):
         """
@@ -80,7 +83,10 @@ class AgentLoader:
                     agent_file_resp = await client.get(agent.urlAgentFile)
                     agent_file_resp.raise_for_status()
                     agent_json = agent_file_resp.text
-
+                    is_agent_valid = AgentValidator.run(json.loads(agent_json))
+                    if not is_agent_valid:
+                        raise AgentLoaderException(f"Agent {agent.name} is not valid schema, please check it out.")
+                    self.agents.append(is_agent_valid.model_dump())
                     new_checksum = hashlib.md5(agent_json.encode()).hexdigest()
 
                     if os.path.exists(checksum_path):
@@ -90,10 +96,8 @@ class AgentLoader:
                             continue
 
                     os.makedirs('storage/agents', exist_ok=True)
-                    is_agent_valid = AgentValidator.run(json.loads(agent_json))
-                    if not is_agent_valid:
-                        raise AgentLoaderException(f"Agent {agent.name} is not valid schema, please check it out.")
-
+                    
+                    
                     async with aiofiles.open(file_path, 'w') as f:
                         await f.write(agent_json)
 
@@ -136,7 +140,7 @@ class AgentLoader:
                         )
 
                         embedding = self.llm_client.embeddings([concated_text])[0]
-
+                        print(tool)
                         self.qdrant_helper.upsert_with_filter(
                             collection_name="llm_orchestrator",
                             payload_filter={

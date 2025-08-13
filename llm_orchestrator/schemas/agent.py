@@ -31,6 +31,7 @@ class Tool(BaseModel):
     name: str
     description: str
     intent_examples: List[str]
+    additional_prompt_to_ai: Optional[str] = None
     tags: List[str]
     schema_model: SchemaModel = Field(..., alias="schema")
     http: HTTPConfig

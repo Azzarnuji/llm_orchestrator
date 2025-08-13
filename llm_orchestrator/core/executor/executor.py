@@ -15,6 +15,7 @@ class Executor:
         self.llm_client = LLMFactory.get(LLMClientType.GEMINI)
         self.qdrant_helper = QdrantHelper()
         self.stream = False
+        self.additional_prompt_to_ai = None
         
         
     async def invoke_query(self, query: str, top_k = 5, stream = False):
@@ -54,14 +55,14 @@ class Executor:
         #         return explained_required_fields.text
                 
         tool_result = await self.get_tool(tools, query)
-        
         # if isinstance(tool_result, dict) and tool_result.get("status") == "need_user_input":
         #     self.context["pending_request"] = tool_result["config"]
         #     self._save_pending_requests()
         #     explained_required_fields = await self.explain_required_fields(tool_result["missing_fields"], query)
         #     return explained_required_fields.text
-
+        
         explained_answer = await self.explain_answer(tool_result, query)
+        self.additional_prompt_to_ai = None
         if self.stream:
             return explained_answer
         return explained_answer.text
@@ -109,7 +110,7 @@ class Executor:
             return {}
 
     @PrivateMethod
-    async def get_tool(self, tools: list[dict], query: str):
+    async def get_tool(self, tools: list[dict], query: str)-> ResponseTool:
         prompt = f""" 
         The JSON Schema says:
             Schemas:
@@ -122,6 +123,8 @@ class Executor:
             "response_mime_type": "application/json",
             "response_schema": ResponseTool,
         })
+        if result.parsed.additional_prompt_to_ai:
+            self.additional_prompt_to_ai = result.parsed.additional_prompt_to_ai
         return await self.perform_request(result.parsed)
 
     @PrivateMethod
@@ -176,6 +179,7 @@ class Executor:
         Answer: {answer}
         
         explain the answer basedon user language
+        {self.additional_prompt_to_ai if self.additional_prompt_to_ai else ""}
         """
         result = await self.llm_client.ask(prompt, stream=self.stream)
         return result
